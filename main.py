@@ -1,7 +1,21 @@
 import tkinter as tk
 from tkinter import messagebox
 
+import sqlite3
 
+# Connect to the SQLite database (or create it if it doesn't exist)
+connection = sqlite3.connect("expense_tracker.db")
+cursor = connection.cursor()
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        amount REAL,
+        category TEXT,
+        notes TEXT
+    )
+    """)
+
+connection.commit()
 
 # Create the main window
 window = tk.Tk()
@@ -38,6 +52,7 @@ def open_add_expense_window():
 
     amount_entry = tk.Entry(add_window, width=30)
     amount_entry.pack()
+    
 
     #Labels and entry fields for Category
     tk.Label(
@@ -49,6 +64,7 @@ def open_add_expense_window():
 
     category_entry = tk.Entry(add_window, width=30)
     category_entry.pack()
+    category_entry.insert(0, "Food")  # Pre-fill with "Food"
 
     #Labels and entry fields for Notes
     tk.Label(
@@ -67,12 +83,27 @@ def open_add_expense_window():
         category = category_entry.get()
         notes = notes_entry.get()
 
-        print("Expense Saved!")
+        print("Expense Saved in the file!")
         print(f"Amount: {amount}")
         print(f"Category: {category}")
         print(f"Notes: {notes}")
 
+        cursor.execute(
+        """
+        INSERT INTO expenses (amount, category, notes)
+        VALUES (?, ?, ?)
+        """,
+        (amount, category, notes)
+        )
+        connection.commit()
+
+        # Display a message box to confirm that the expense has been saved
         messagebox.showinfo("Expense Saved", "Your expense has been saved successfully!")
+
+        # Clear the entry fields after saving
+        amount_entry.delete(0, tk.END)
+        category_entry.delete(0, tk.END)
+        notes_entry.delete(0, tk.END)
 
     tk.Button(
     add_window,
