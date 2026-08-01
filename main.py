@@ -19,20 +19,14 @@ connection.commit()
 
 # Create the main window
 window = tk.Tk()
-
-# Window title
-window.title("Yesh's Expense Tracker")
-
-# Window size
-window.geometry("500x350")
-
+window.title("Yesh's Expense Tracker") # Window title
+window.geometry("500x350") # Window size
 # Welcome message
 welcome_label = tk.Label(
     window,
     text="Welcome to Yesh's Monthly Expense Tracker",
     font=("Georgia", 18)
 )
-
 welcome_label.pack(pady=40)
 
 # Function for Add Expense window
@@ -119,8 +113,47 @@ add_button = tk.Button(
     height=2,
     command=open_add_expense_window
 )
-
 add_button.pack()
+
+# Function for View Expenses window
+def view_expenses():
+    cursor.execute("SELECT * FROM expenses")
+    expenses = cursor.fetchall()
+    print(expenses)
+
+    # Function for viewing expenses
+    def view_expense_window():
+        expenses_window = tk.Toplevel(window)
+        expenses_window.title("Expenses")
+        expenses_window.geometry("500x400")
+
+        tk.Label(
+            expenses_window,
+            text="Amount      Category      Notes",
+            font=("Arial", 12, "bold")
+        ).pack(pady=10)
+        
+        for expense in expenses:
+            id, amount, category, notes = expense
+
+            tk.Label(
+                expenses_window,
+                text=f"{amount}    {category}    {notes}"
+                #text=f"ID: {id}, Amount: {amount}, Category: {category}, Notes: {notes}"
+            ).pack()
+
+    view_expense_window()
+
+# View Expenses button in the main window
+view_button = tk.Button(
+    window,
+    text="View Expenses",
+    width=20,
+    height=2,
+    command=view_expenses
+)
+view_button.pack()
+
 
 # Keep the application running
 window.mainloop()
