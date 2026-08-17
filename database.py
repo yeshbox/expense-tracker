@@ -13,3 +13,19 @@ cursor.execute("""
     """)
 
 connection.commit()
+
+
+def insert_expense(amount, category, notes):
+    cursor.execute(
+        """
+        INSERT INTO expenses (amount, category, notes)
+        VALUES (?, ?, ?)
+        """,
+        (amount, category, notes)
+    )
+    connection.commit()
+
+
+def get_expenses():
+    cursor.execute("SELECT * FROM expenses")
+    return cursor.fetchall()
