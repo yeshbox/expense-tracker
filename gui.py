@@ -22,7 +22,7 @@ class ExpenseTrackerApp:
 
         self.welcome_label = tk.Label(
             self.window,
-            text="Welcome to Yesh's Monthly Expense Tracker",
+            text="Welcome to Yesh's Expense Tracker",
             font=("Georgia", 18)
         )
         self.welcome_label.pack(pady=40)
